@@ -21,12 +21,12 @@ static void generate_lookup(uint8_t *_lookup, uint8_t _gen) {
     }
 }
 
-static uint8_t crc8(uint8_t _dataIn, uint8_t _dataLast) {
+static uint8_t crc8(uint8_t _dataIn, uint8_t _dataLast, uint8_t _poly) {
     uint8_t a;
     for(a=0; a<8; a++) {
         if ( ((_dataIn ^ _dataLast) & 0x80) != 0 ) {
             _dataLast <<= 1;
-            _dataLast ^= POLYNOMIAL;
+            _dataLast ^= _poly;
         } else _dataLast <<= 1;
         _dataIn <<= 1;
     }
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
     crc=0;
     clock_gettime( CLOCK_REALTIME, &start);
     ////////////////////////////////////////////////
-    for (i=0; i<DATA_SIZE; i++) crc=crc8(data[i],crc);
+    for (i=0; i<DATA_SIZE; i++) crc=crc8(data[i],crc,p);
     ////////////////////////////////////////////////
     clock_gettime( CLOCK_REALTIME, &stop);
     elapsed = ( stop.tv_sec - start.tv_sec ) + ( stop.tv_nsec - start.tv_nsec ) / 1000000000.0;
